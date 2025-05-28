@@ -2,6 +2,7 @@
 {
     public class CustomerId
     {
+        protected CustomerId() { }
         public Guid Value { get; private set; }
         public CustomerId(Guid value) => Value = value;
     }

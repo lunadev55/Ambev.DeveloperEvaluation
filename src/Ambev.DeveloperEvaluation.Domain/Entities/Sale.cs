@@ -10,8 +10,14 @@
         public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
         private readonly List<SaleItem> _items;
         public bool IsCancelled { get; private set; }
+                
+        protected Sale()
+        {
+            _items = new List<SaleItem>();
+        }
 
         public Sale(Guid id, string saleNumber, DateTime date, CustomerId customerId, BranchId branchId)
+            : this()
         {
             Id = id;
             SaleNumber = saleNumber ?? throw new ArgumentNullException(nameof(saleNumber));
