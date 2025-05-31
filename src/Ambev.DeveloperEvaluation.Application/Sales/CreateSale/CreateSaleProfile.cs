@@ -17,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                     new BranchId(cmd.BranchId)));
 
             // map item DTO -> domain item
-            CreateMap<SaleItemDto, SaleItem>()
+            CreateMap<CreateSaleItemDto, SaleItem>()
                 .ConstructUsing(dto => new SaleItem(
                     Guid.NewGuid(),
                     dto.ProductId,

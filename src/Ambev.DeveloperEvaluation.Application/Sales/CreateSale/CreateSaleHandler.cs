@@ -7,14 +7,22 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
     public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
     {        
         private readonly ISaleRepository _repository;
+        private readonly IUserRepository _userRepository;
 
-        public CreateSaleHandler(ISaleRepository repository)
+        public CreateSaleHandler(
+            ISaleRepository repository, 
+            IUserRepository userRepo)
         {
             _repository = repository;
+            _userRepository = userRepo;
         }
 
         public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
-        {            
+        {
+            var userExists = await _userRepository.GetByIdAsync(request.CustomerId);
+            if (userExists is null)
+                throw new DomainException("Customer not found");
+
             var sale = new Sale(
                 Guid.NewGuid(),
                 request.SaleNumber,

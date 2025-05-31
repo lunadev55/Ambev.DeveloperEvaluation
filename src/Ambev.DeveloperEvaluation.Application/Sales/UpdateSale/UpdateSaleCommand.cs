@@ -9,10 +9,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         public DateTime Date { get; set; }
         public Guid CustomerId { get; set; }
         public Guid BranchId { get; set; }
-        public List<SaleItemDto> Items { get; set; } = new List<SaleItemDto>();
+        public List<UpdateSaleItemDto> Items { get; set; } = new List<UpdateSaleItemDto>();
     }
 
-    public class SaleItemDto
+    public class UpdateSaleItemDto
     {
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }

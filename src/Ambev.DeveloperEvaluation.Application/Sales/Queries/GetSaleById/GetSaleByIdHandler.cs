@@ -21,6 +21,17 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Queries.GetSaleById
             if (sale == null)
                 throw new KeyNotFoundException($"Sale with ID '{request.Id}' not found.");
 
+            try
+            {
+                var retult = _mapper.Map<GetSaleByIdResult>(sale);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            
+
             return _mapper.Map<GetSaleByIdResult>(sale);
         }
     }

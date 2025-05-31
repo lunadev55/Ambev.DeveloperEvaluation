@@ -8,10 +8,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         public DateTime Date { get; set; }
         public Guid CustomerId { get; set; }
         public Guid BranchId { get; set; }
-        public List<SaleItemDto> Items { get; set; } = new List<SaleItemDto>();
+        public List<CreateSaleItemDto> Items { get; set; } = new List<CreateSaleItemDto>();
     }
 
-    public class SaleItemDto
+    public class CreateSaleItemDto
     {
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }

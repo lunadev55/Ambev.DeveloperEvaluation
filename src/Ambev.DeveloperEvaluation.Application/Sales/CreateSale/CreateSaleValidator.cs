@@ -25,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         }
     }
 
-    internal class SaleItemDtoValidator : AbstractValidator<SaleItemDto>
+    internal class SaleItemDtoValidator : AbstractValidator<CreateSaleItemDto>
     {
         public SaleItemDtoValidator()
         {

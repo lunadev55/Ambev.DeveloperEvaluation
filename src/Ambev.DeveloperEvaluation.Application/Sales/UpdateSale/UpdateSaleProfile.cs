@@ -12,7 +12,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
 
             // Map DTO to domain item (discount handled by domain)
-            CreateMap<SaleItemDto, SaleItem>()
+            CreateMap<UpdateSaleItemDto, SaleItem>()
                 .ConstructUsing(dto => new SaleItem(
                     Guid.NewGuid(),
                     dto.ProductId,
