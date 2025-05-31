@@ -49,9 +49,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         /// GET /api/sales/{id}
         /// </summary>
         //[HttpGet("{id}")]
-        [HttpGet("{id}", Name = nameof(GetById))]
+        [HttpGet("{id}", Name = nameof(GetSaleById))]
 
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetSaleById(Guid id)
         {
             var query = new GetSaleByIdQuery { Id = id };
             var result = await _mediator.Send(query);
@@ -65,7 +65,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         public async Task<IActionResult> Create([FromBody] CreateSaleCommand command)
         {
             var result = await _mediator.Send(command);
-            return Created(nameof(GetById), new { id = result.Id }, result);
+            return Created(nameof(GetSaleById), new { id = result.Id }, result);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
 
@@ -19,8 +20,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 
         public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
-            var userExists = await _userRepository.GetByIdAsync(request.CustomerId);
-            if (userExists is null)
+            var user = await _userRepository.GetByIdAsync(request.CustomerId);
+            if (user == null || user.Role != UserRole.Customer)
                 throw new DomainException("Customer not found");
 
             var sale = new Sale(

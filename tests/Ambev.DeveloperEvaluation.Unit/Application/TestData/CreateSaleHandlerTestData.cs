@@ -14,9 +14,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
             Date = Faker.Date.Past().Date,
             CustomerId = Faker.Random.Guid(),
             BranchId = Faker.Random.Guid(),
-            Items = new List<SaleItemDto>
+            Items = new List<CreateSaleItemDto>
             {
-                new SaleItemDto
+                new CreateSaleItemDto
                 {
                     ProductId = Faker.Random.Guid(),
                     Quantity  = Faker.Random.Int(1, 4),
@@ -31,9 +31,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
             Date = ValidCommand().Date,
             CustomerId = ValidCommand().CustomerId,
             BranchId = ValidCommand().BranchId,
-            Items = new List<SaleItemDto>
+            Items = new List<CreateSaleItemDto>
             {
-                new SaleItemDto
+                new CreateSaleItemDto
                 {
                     ProductId = Faker.Random.Guid(),
                     Quantity  = 21,
