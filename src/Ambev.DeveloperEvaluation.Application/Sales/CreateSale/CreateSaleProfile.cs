@@ -3,11 +3,18 @@ using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
+    /// <summary>
+    /// AutoMapper profile for mapping between CreateSale DTOs and domain entities.
+    /// </summary>
     public class CreateSaleProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateSaleProfile"/> class,
+        /// configuring mappings from <see cref="CreateSaleCommand"/> to <see cref="Sale"/>,
+        /// and from <see cref="CreateSaleItemDto"/> to <see cref="SaleItem"/>.
+        /// </summary>
         public CreateSaleProfile()
-        {
-            // map command -> domain entity
+        {            
             CreateMap<CreateSaleCommand, Sale>()
                 .ConstructUsing(cmd => new Sale(
                     Guid.NewGuid(),
@@ -15,15 +22,15 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
                     cmd.Date,
                     new CustomerId(cmd.CustomerId),
                     new BranchId(cmd.BranchId)));
-
-            // map item DTO -> domain item
+                        
             CreateMap<CreateSaleItemDto, SaleItem>()
                 .ConstructUsing(dto => new SaleItem(
                     Guid.NewGuid(),
                     dto.ProductId,
                     dto.Quantity,
                     dto.UnitPrice,
-                    0m /* domain calculates discount internally */));
+                    0m /* discount will be calculated by domain logic */));
         }
     }
 }
+
