@@ -6,7 +6,7 @@ using MediatR;
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
     /// <summary>
-    /// Handles the creation of a new <see cref="Domain.Entities.Sale"/>.
+    /// Handles the creation of a new <see cref="Sale"/>.
     /// Validates the customer, constructs the sale aggregate, adds items, and persists it.
     /// </summary>
     public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
@@ -18,10 +18,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         /// Initializes a new instance of the <see cref="CreateSaleHandler"/> class.
         /// </summary>
         /// <param name="repository">
-        /// The repository for persisting <see cref="Domain.Entities.Sale"/> aggregates.
+        /// The repository for persisting <see cref="Sale"/> aggregates.
         /// </param>
         /// <param name="userRepo">
-        /// The repository for accessing <see cref="Domain.Entities.User"/> entities to validate the customer role.
+        /// The repository for accessing <see cref="User"/> entities to validate the customer role.
         /// </param>
         public CreateSaleHandler(
             ISaleRepository repository,
@@ -56,9 +56,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
             var sale = new Sale(
                 Guid.NewGuid(),
                 request.SaleNumber,
-                request.Date,
+                request.Date,                
                 new CustomerId(request.CustomerId),
-                new BranchId(request.BranchId));
+                request.Branch
+                );
                     
             foreach (var dto in request.Items)
             {

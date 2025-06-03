@@ -18,10 +18,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
             CreateMap<CreateSaleCommand, Sale>()
                 .ConstructUsing(cmd => new Sale(
                     Guid.NewGuid(),
-                    cmd.SaleNumber,
+                    cmd.SaleNumber, 
                     cmd.Date,
                     new CustomerId(cmd.CustomerId),
-                    new BranchId(cmd.BranchId)));
+                    cmd.Branch));
                         
             CreateMap<CreateSaleItemDto, SaleItem>()
                 .ConstructUsing(dto => new SaleItem(

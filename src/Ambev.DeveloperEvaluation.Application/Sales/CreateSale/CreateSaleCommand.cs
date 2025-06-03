@@ -25,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         /// <summary>
         /// Gets or sets the unique identifier of the branch where the sale was made.
         /// </summary>
-        public Guid BranchId { get; set; }
+        public string Branch { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of items to include in this sale.

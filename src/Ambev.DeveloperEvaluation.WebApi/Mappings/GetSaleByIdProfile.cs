@@ -27,8 +27,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Queries.GetSaleById
                     dest => dest.CustomerId,
                     opt => opt.MapFrom(src => src.CustomerId))
                 .ForMember(
-                    dest => dest.BranchId,
-                    opt => opt.MapFrom(src => src.BranchId))
+                    dest => dest.Branch,
+                    opt => opt.MapFrom(src => src.Branch))
                 .ForMember(
                     dest => dest.TotalAmount,
                     opt => opt.MapFrom(src => src.TotalAmount()))

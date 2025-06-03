@@ -13,7 +13,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
             SaleNumber = Faker.Random.Replace("SN-#####"),
             Date = Faker.Date.Past().Date,
             CustomerId = Faker.Random.Guid(),
-            BranchId = Faker.Random.Guid(),
+            Branch = "Downtown Branch",
             Items = new List<CreateSaleItemDto>
             {
                 new CreateSaleItemDto
@@ -30,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
             SaleNumber = ValidCommand().SaleNumber,
             Date = ValidCommand().Date,
             CustomerId = ValidCommand().CustomerId,
-            BranchId = ValidCommand().BranchId,
+            Branch = ValidCommand().Branch,
             Items = new List<CreateSaleItemDto>
             {
                 new CreateSaleItemDto
@@ -49,7 +49,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application.TestData
                 command.SaleNumber,
                 command.Date,
                 new CustomerId(command.CustomerId),
-                new BranchId(command.BranchId));
+                command.Branch);
 
             foreach (var dto in command.Items)
                 sale.AddItem(dto.ProductId, dto.Quantity, dto.UnitPrice);

@@ -29,9 +29,9 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         public Guid CustomerId { get; set; }
 
         /// <summary>
-        /// Gets or sets the identifier of the branch where the sale occurred.
+        /// Gets or sets the name (plain text) of the branch where the sale occurred.
         /// </summary>
-        public Guid BranchId { get; set; }
+        public string Branch { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of <see cref="UpdateSaleItemDto"/> instances

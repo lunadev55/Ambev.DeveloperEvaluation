@@ -30,9 +30,9 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
                 .NotEmpty()
                 .WithMessage("CustomerId is required.");
 
-            RuleFor(x => x.BranchId)
+            RuleFor(x => x.Branch)
                 .NotEmpty()
-                .WithMessage("BranchId is required.");
+                .WithMessage("Branch is required.");
 
             RuleFor(x => x.Items)
                 .NotEmpty()

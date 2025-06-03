@@ -65,19 +65,16 @@ namespace Ambev.DeveloperEvaluation.ORM
                   .HasColumnName("IsCancelled")
                   .HasDefaultValue(false);
 
+                eb.Property(s => s.Branch)
+                  .HasColumnName("Branch")
+                  .IsRequired();
+
                 eb.OwnsOne(s => s.CustomerId, cb =>
                 {
                     cb.Property(c => c.Value)
                       .HasColumnName("CustomerId")
                       .IsRequired();
-                });
-
-                eb.OwnsOne(s => s.BranchId, bb =>
-                {
-                    bb.Property(b => b.Value)
-                      .HasColumnName("BranchId")
-                      .IsRequired();
-                });
+                });               
 
                 eb.OwnsMany(s => s.Items, ib =>
                 {
@@ -107,8 +104,7 @@ namespace Ambev.DeveloperEvaluation.ORM
                       .ValueGeneratedOnAdd();
                 });
             });
-
-            // Tell EF that Rating is owned by Product and should be stored as columns in Products table
+            
             modelBuilder.Entity<Product>()
                 .OwnsOne(
                     p => p.Rating,

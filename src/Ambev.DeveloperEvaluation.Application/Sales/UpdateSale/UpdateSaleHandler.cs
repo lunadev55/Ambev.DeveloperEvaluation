@@ -51,7 +51,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             
             sale.UpdateSaleNumber(request.SaleNumber);
             sale.UpdateDate(request.Date);
-            sale.UpdateCustomer(new CustomerId(request.CustomerId), new BranchId(request.BranchId));
+            sale.UpdateCustomer(new CustomerId(request.CustomerId));
+            sale.UpdateBranch(request.Branch);
             
             var newItems = request.Items
                 .Select(dto =>

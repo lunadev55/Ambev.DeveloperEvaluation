@@ -29,9 +29,8 @@
         /// <summary>
         /// Gets the branch identifier (value object) where this sale was made.
         /// </summary>
-        public BranchId BranchId { get; private set; }
-
-        // Backing field for the owned collection of SaleItem
+        public string Branch { get; private set; }
+                
         private readonly List<SaleItem> _items;
 
         /// <summary>
@@ -60,10 +59,10 @@
         /// <param name="saleNumber">The sale number (cannot be null or whitespace).</param>
         /// <param name="date">The date/time of the sale (must be within an acceptable range).</param>
         /// <param name="customerId">The customer identifier value object (cannot be null).</param>
-        /// <param name="branchId">The branch identifier value object (cannot be null).</param>
+        /// <param name="branch">The branch name (plain text) value object (cannot be null).</param>
         /// <exception cref="DomainException">Thrown if ID is empty or saleNumber is empty.</exception>
         /// <exception cref="ArgumentNullException">Thrown if customerId or branchId is null.</exception>
-        public Sale(Guid id, string saleNumber, DateTime date, CustomerId customerId, BranchId branchId)
+        public Sale(Guid id, string saleNumber, DateTime date, CustomerId customerId, string branch)
             : this()
         {
             if (id == Guid.Empty)
@@ -71,15 +70,13 @@
             if (string.IsNullOrWhiteSpace(saleNumber))
                 throw new DomainException("SaleNumber cannot be empty.");
             if (customerId == null)
-                throw new ArgumentNullException(nameof(customerId));
-            if (branchId == null)
-                throw new ArgumentNullException(nameof(branchId));
+                throw new ArgumentNullException(nameof(customerId));           
 
             Id = id;
             SaleNumber = saleNumber;
             Date = date;
             CustomerId = customerId;
-            BranchId = branchId;
+            Branch = branch;
             IsCancelled = false;
         }
 
@@ -197,20 +194,25 @@
         }
 
         /// <summary>
-        /// Updates the associated customer and branch identifiers for this sale.
+        /// Updates the associated customer identifier for this sale.
         /// </summary>
-        /// <param name="newCustomerId">The new customer identifier value object (cannot be null).</param>
-        /// <param name="newBranchId">The new branch identifier value object (cannot be null).</param>
-        /// <exception cref="DomainException">Thrown if either newCustomerId or newBranchId is null.</exception>
-        public void UpdateCustomer(CustomerId newCustomerId, BranchId newBranchId)
+        /// <param name="newCustomerId">The new customer identifier value object (cannot be null).</param>        
+        /// <exception cref="DomainException">Thrown if either newCustomerId is null.</exception>
+        public void UpdateCustomer(CustomerId newCustomerId/*, BranchId newBranchId*/)
         {
             if (newCustomerId == null)
-                throw new DomainException("CustomerId cannot be null.");
-            if (newBranchId == null)
-                throw new DomainException("BranchId cannot be null.");
+                throw new DomainException("CustomerId cannot be null.");         
 
-            CustomerId = newCustomerId;
-            BranchId = newBranchId;
+            CustomerId = newCustomerId;            
+        }
+
+        /// <summary>
+        /// Updates the associated branch for this sale.
+        /// </summary>       
+        /// <param name="newBranch">The new branch in string format.</param>        
+        public void UpdateBranch(string newBranch)
+        {
+            Branch = newBranch;
         }
 
         /// <summary>

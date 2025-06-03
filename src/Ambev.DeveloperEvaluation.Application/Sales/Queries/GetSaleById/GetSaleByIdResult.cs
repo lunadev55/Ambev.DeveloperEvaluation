@@ -29,7 +29,7 @@
         /// <summary>
         /// Gets or sets the unique identifier of the branch where this sale took place.
         /// </summary>
-        public Guid BranchId { get; set; }
+        public string Branch { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this sale has been cancelled.
