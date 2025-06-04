@@ -8,7 +8,7 @@ namespace Ambev.DeveloperEvaluation.ORM
 {
     /// <summary>
     /// Represents the Entity Framework Core database context for the Developer Evaluation application.
-    /// Contains DbSet properties for Users, Sales, SaleItems, and Products.
+    /// Contains DbSet properties for Users, Cars, CartItems, and Products.
     /// </summary>
     public class DefaultContext : DbContext
     {
@@ -18,14 +18,14 @@ namespace Ambev.DeveloperEvaluation.ORM
         public DbSet<User> Users { get; set; }
 
         /// <summary>
-        /// Gets or sets the Sales DbSet.
+        /// Gets or sets the Carts DbSet.
         /// </summary>
-        public DbSet<Sale> Sales { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         /// <summary>
-        /// Gets or sets the SaleItems DbSet.
+        /// Gets or sets the CartItems DbSet.
         /// </summary>
-        public DbSet<SaleItem> SaleItems { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         /// <summary>
         /// Gets or sets the Products DbSet.
@@ -48,14 +48,13 @@ namespace Ambev.DeveloperEvaluation.ORM
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
-
-            // --- Sale mapping ---
-            modelBuilder.Entity<Sale>(eb =>
+   
+            modelBuilder.Entity<Cart>(eb =>
             {
-                eb.ToTable("Sales");
+                eb.ToTable("Carts");
                 eb.HasKey(s => s.Id);
 
-                eb.Property(s => s.SaleNumber)
+                eb.Property(s => s.CartNumber)
                   .IsRequired();
 
                 eb.Property(s => s.Date)
@@ -78,10 +77,10 @@ namespace Ambev.DeveloperEvaluation.ORM
 
                 eb.OwnsMany(s => s.Items, ib =>
                 {
-                    ib.ToTable("SaleItems");
+                    ib.ToTable("CartItems");
                     ib.HasKey(i => i.Id);
 
-                    ib.Property(e => e.SaleId)
+                    ib.Property(e => e.CartId)
                       .IsRequired();
 
                     ib.Property(i => i.ProductId)
