@@ -4,7 +4,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A comprehensive .NET 8.0 application demonstrating modern software architecture patterns and best practices. This project showcases Domain-Driven Design (DDD), CQRS/Mediator pattern, Entity Framework Core with PostgreSQL, and comprehensive unit testing.
+A .NET 8.0 application demonstrating modern software architecture patterns and best practices. This project showcases Domain-Driven Design (DDD), CQRS/Mediator pattern, Entity Framework Core with PostgreSQL, and comprehensive unit testing.
 
 ## 🚀 Features
 
