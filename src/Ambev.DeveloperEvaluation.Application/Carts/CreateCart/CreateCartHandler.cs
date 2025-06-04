@@ -11,24 +11,30 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
     /// </summary>
     public class CreateCartHandler : IRequestHandler<CreateCartCommand, CreateCartResult>
     {
-        private readonly ICartRepository _repository;
+        private readonly ICartRepository _cartRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IProductRepository _productRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCartHandler"/> class.
         /// </summary>
-        /// <param name="repository">
+        /// <param name="cartRepository">
         /// The repository for persisting <see cref="Cart"/> aggregates.
         /// </param>
-        /// <param name="userRepo">
+        /// <param name="userRepository">
         /// The repository for accessing <see cref="User"/> entities to validate the customer role.
         /// </param>
+        /// /// <param name="productRepository">
+        /// The repository for accessing <see cref="Product"/> entities.
+        /// </param>
         public CreateCartHandler(
-            ICartRepository repository,
-            IUserRepository userRepo)
+            ICartRepository cartRepository,
+            IUserRepository userRepository,
+            IProductRepository productRepository)
         {
-            _repository = repository;
-            _userRepository = userRepo;
+            _cartRepository = cartRepository;
+            _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         /// <summary>
@@ -51,7 +57,7 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
         {            
             var user = await _userRepository.GetByIdAsync(request.CustomerId);
             if (user == null || user.Role != UserRole.Customer)
-                throw new DomainException("Customer not found");
+                throw new KeyNotFoundException($"Customer '{request.CustomerId}' not found");
                         
             var cart = new Cart(
                 Guid.NewGuid(),
@@ -61,13 +67,16 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
                 request.Branch
                 );
                     
-            foreach (var dto in request.Items)
+            foreach (var item in request.Items)
             {
-                cart.AddItem(dto.ProductId, dto.Quantity, dto.UnitPrice);
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product == null)
+                    throw new KeyNotFoundException($"Product Id {item.ProductId} not found");
+                cart.AddItem(item.ProductId, item.Quantity, item.UnitPrice);
             }
                         
-            await _repository.AddAsync(cart);
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _cartRepository.AddAsync(cart);
+            await _cartRepository.SaveChangesAsync(cancellationToken);
                         
             return new CreateCartResult { Id = cart.Id };
         }

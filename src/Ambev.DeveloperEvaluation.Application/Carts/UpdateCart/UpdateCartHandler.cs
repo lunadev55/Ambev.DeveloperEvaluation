@@ -1,5 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.ORM.Repositories;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
@@ -10,17 +12,30 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
     /// </summary>
     public class UpdateCartHandler : IRequestHandler<UpdateCartCommand, UpdateCartResult>
     {
-        private readonly ICartRepository _repository;
+        private readonly ICartRepository _cartRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IProductRepository _productRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCartHandler"/> class.
         /// </summary>
-        /// <param name="repository">
+        /// <param name="cartRepository">
         /// The <see cref="ICartRepository"/> used to load, delete, and save cart and cart-item data.
         /// </param>
-        public UpdateCartHandler(ICartRepository repository)
+        /// /// <param name="userRepository">
+        /// The <see cref="IUserRepository"/> used to load user data.
+        /// </param>
+        /// /// <param name="productRepository">
+        /// The <see cref="IProductRepository"/> used to load product data.
+        /// </param>
+        public UpdateCartHandler(
+            ICartRepository cartRepository,
+            IUserRepository userRepository,
+            IProductRepository productRepository    )
         {
-            _repository = repository;
+            _cartRepository = cartRepository;
+            _userRepository = userRepository;
+            _productRepository = productRepository;
         }
 
         /// <summary>
@@ -45,9 +60,20 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
         /// </exception>
         public async Task<UpdateCartResult> Handle(UpdateCartCommand request, CancellationToken cancellationToken)
         {            
-            var cart = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            var cart = await _cartRepository.GetByIdAsync(request.Id, cancellationToken);
             if (cart == null)
                 throw new KeyNotFoundException($"Cart with ID '{request.Id}' not found.");
+
+            var user = await _userRepository.GetByIdAsync(request.CustomerId);
+            if (user == null || user.Role != UserRole.Customer)
+                throw new KeyNotFoundException($"Customer with '{request.CustomerId}' not found.");
+
+            foreach (var item in request.Items)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product == null)
+                    throw new KeyNotFoundException($"Product with Id {item.ProductId} not found.");                
+            }
 
             cart.UpdateCartNumber(request.CartNumber);
             cart.UpdateDate(request.Date);
@@ -68,13 +94,13 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
                 })
                 .ToList();
             
-            await _repository.DeleteAllItemsByCartIdAsync(cart.Id, cancellationToken);
+            await _cartRepository.DeleteAllItemsByCartIdAsync(cart.Id, cancellationToken);
             
-            await _repository.AddItemsAsync(newItems, cart.Id, cancellationToken);
+            await _cartRepository.AddItemsAsync(newItems, cart.Id, cancellationToken);
+
+            _cartRepository.Update(cart);
             
-            _repository.Update(cart);
-            
-            await _repository.SaveChangesAsync(cancellationToken);
+            await _cartRepository.SaveChangesAsync(cancellationToken);
 
             return new UpdateCartResult { Success = true };
         }

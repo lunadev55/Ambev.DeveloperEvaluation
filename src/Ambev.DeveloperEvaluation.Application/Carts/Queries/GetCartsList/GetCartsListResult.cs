@@ -36,7 +36,7 @@
         /// <summary>
         /// Gets or sets the carts number (business reference or invoice code).
         /// </summary>
-        public string CartsNumber { get; set; }
+        public string CartNumber { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time when the carts occurred.
