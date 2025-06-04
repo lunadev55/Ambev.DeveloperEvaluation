@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Ambev.DeveloperEvaluation.Application.Carts.CancelCart
 {
@@ -9,6 +10,7 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CancelCart
     public class CancelCartHandler : IRequestHandler<CancelCartCommand, CancelCartResult>
     {
         private readonly ICartRepository _repository;
+        private readonly ILogger<CancelCartHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CancelCartHandler"/> class.
@@ -16,9 +18,14 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CancelCart
         /// <param name="repository">
         /// The repository used to load and save <see cref="Domain.Entities.Cart"/> aggregates.
         /// </param>
-        public CancelCartHandler(ICartRepository repository)
+        /// /// <param name="logger">
+        /// Used to log the Cancel event.
+        /// </param>
+        public CancelCartHandler(
+            ICartRepository repository, ILogger<CancelCartHandler> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -38,20 +45,31 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CancelCart
         /// Thrown if no cart with the specified ID exists in the repository.
         /// </exception>
         public async Task<CancelCartResult> Handle(CancelCartCommand request, CancellationToken cancellationToken)
-        {
-            // Retrieve the cart from the repository
+        {            
             var cart = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (cart == null)
                 throw new KeyNotFoundException($"Cart with ID '{request.Id}' not found.");
-
-            // Invoke domain logic to cancel the cart (and its items)
+            
             cart.CancelCart();
-
-            // Mark the cart as modified so EF Core will persist the IsCancelled change
+            
             _repository.Update(cart);
-
-            // Save changes to the database
+            
             await _repository.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation(
+                "SaleCancelled | SaleId={SaleId}",
+                cart.Id
+            );
+            
+            foreach (var item in cart.Items)
+            {
+                _logger.LogInformation(
+                    "  ItemCancelled | CartId={CartId} | ItemId={ItemId} | ProductId={ProductId}",
+                    cart.Id,
+                    item.Id,
+                    item.ProductId
+                );
+            }
 
             return new CancelCartResult { Success = true };
         }

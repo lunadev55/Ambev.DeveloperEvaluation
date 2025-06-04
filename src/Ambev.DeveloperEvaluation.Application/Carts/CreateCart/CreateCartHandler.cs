@@ -2,6 +2,7 @@
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
 {
@@ -14,6 +15,7 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
         private readonly ICartRepository _cartRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+        private readonly ILogger<CreateCartHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCartHandler"/> class.
@@ -30,11 +32,13 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
         public CreateCartHandler(
             ICartRepository cartRepository,
             IUserRepository userRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            ILogger<CreateCartHandler> logger)
         {
             _cartRepository = cartRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -77,7 +81,28 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.CreateCart
                         
             await _cartRepository.AddAsync(cart);
             await _cartRepository.SaveChangesAsync(cancellationToken);
-                        
+
+            _logger.LogInformation(
+                "CartCreated | CartId={CartId} | CustomerId={CustomerId} | Branch={Branch} | TotalAmount={Total}",
+                cart.Id,
+                cart.CustomerId.Value,
+                cart.Branch,
+                cart.TotalAmount()
+            );
+
+            foreach (var item in cart.Items)
+            {
+                _logger.LogInformation(
+                    "  ItemCreated | SaleId={Cart} | ItemId={ItemId} | ProductId={ProductId} | Quantity={Qty} | UnitPrice={Price} | DiscountRate={Disc}",
+                    cart.Id,
+                    item.Id,
+                    item.ProductId,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.DiscountRate
+                );
+            }
+
             return new CreateCartResult { Id = cart.Id };
         }
     }

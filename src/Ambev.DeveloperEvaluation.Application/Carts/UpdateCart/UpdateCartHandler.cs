@@ -3,6 +3,7 @@ using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.ORM.Repositories;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
 {
@@ -15,6 +16,7 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
         private readonly ICartRepository _cartRepository;
         private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+        private readonly ILogger<UpdateCartHandler> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCartHandler"/> class.
@@ -31,11 +33,13 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
         public UpdateCartHandler(
             ICartRepository cartRepository,
             IUserRepository userRepository,
-            IProductRepository productRepository    )
+            IProductRepository productRepository,
+            ILogger<UpdateCartHandler> logger)
         {
             _cartRepository = cartRepository;
             _userRepository = userRepository;
             _productRepository = productRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -101,6 +105,27 @@ namespace Ambev.DeveloperEvaluation.Application.Carts.UpdateCart
             _cartRepository.Update(cart);
             
             await _cartRepository.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation(
+                "CartModified  | CartId={CartId} | CustomerId={CustomerId} | Branch={Branch} | TotalAmount={Total}",
+                cart.Id,
+                cart.CustomerId.Value,
+                cart.Branch,
+                cart.TotalAmount()
+            );
+
+            foreach (var item in cart.Items)
+            {
+                _logger.LogInformation(
+                    "  ItemModified | SaleId={Cart} | ItemId={ItemId} | ProductId={ProductId} | Quantity={Qty} | UnitPrice={Price} | DiscountRate={Disc}",
+                    cart.Id,
+                    item.Id,
+                    item.ProductId,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.DiscountRate
+                );
+            }
 
             return new UpdateCartResult { Success = true };
         }
